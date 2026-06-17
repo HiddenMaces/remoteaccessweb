@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mischa Deden - Professional Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 60px 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 30px;
+        }
+        
+        .name {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+        
+        .title {
+            font-size: 18px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .location {
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .content {
+            margin-bottom: 40px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d3748;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            color: #667eea;
+        }
+        
+        .intro-text {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #4a5568;
+            margin-bottom: 12px;
+        }
+        
+        .expertise {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 12px 0;
+        }
+        
+        .expertise-item {
+            font-size: 14px;
+            color: #4a5568;
+            padding: 8px 12px;
+            background: #f7fafc;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+        
+        .certifications {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .cert-badge {
+            display: inline-block;
+            background: #edf2f7;
+            color: #667eea;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .social-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #f7fafc;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .social-link:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .policy-section {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 40px;
+        }
+        
+        .policy-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 16px;
+        }
+        
+        .policy-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #4a5568;
+            margin-bottom: 20px;
+            background: white;
+            padding: 16px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .policy-list {
+            list-style: none;
+            margin-bottom: 16px;
+        }
+        
+        .policy-list li {
+            font-size: 14px;
+            color: #4a5568;
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        .policy-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: white;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: #667eea;
+            flex-shrink: 0;
+        }
+        
+        .checkbox-label {
+            font-size: 14px;
+            color: #4a5568;
+            line-height: 1.6;
+            cursor: pointer;
+        }
+        
+        .confirmation-text {
+            font-size: 13px;
+            color: #718096;
+            font-style: italic;
+            margin-top: 12px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .button {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .button-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .button-primary:hover:not(:disabled) {
+            background: #5568d3;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .button-primary:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        
+        .button-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .button-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .success-message {
+            display: none;
+            background: #c6f6d5;
+            border: 1px solid #9ae6b4;
+            color: #22543d;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 24px;
+            }
+            
+            .name {
+                font-size: 28px;
+            }
+            
+            .expertise {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="name">Mischa Deden</div>
+            <div class="title">Staff Solutions Engineer</div>
+            <div class="location">Amersfoort, Netherlands</div>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <div class="section-title">About Me</div>
+                <p class="intro-text">
+                    Passionate cybersecurity professional with 40+ years of IT experience and 15+ years specializing in IT security. Currently serving as Staff Solutions Engineer at SentinelOne, where I drive technical strategy and customer success across enterprise security platforms.
+                </p>
+                <p class="intro-text">
+                    I bring a unique blend of technical depth and business acumen, working fluently with both security engineering teams and executive buyers (CISOs, VPs). My approach combines analytical thinking with practical problem-solving to architect solutions that address complex security challenges.
+                </p>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Core Expertise</div>
+                <div class="expertise">
+		    <div class="expertise-item">Networking</div>
+                    <div class="expertise-item">Windows & Linux</div>
+                    <div class="expertise-item">EDR / XDR Architecture</div>
+                    <div class="expertise-item">SIEM & SOC Operations</div>
+                    <div class="expertise-item">Detection Engineering</div>
+                    <div class="expertise-item">Threat Hunting & Analytics</div>
+                    <div class="expertise-item">Enterprise Security Strategy</div>
+                    <div class="expertise-item">Cloud Security Integration</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Professional Background</div>
+                <p class="intro-text" style="margin-bottom: 16px;">
+                    <strong>Current:</strong> Staff Solutions Engineer, SentinelOne (since January 2023)
+                </p>
+                <p class="intro-text">
+                    <strong>Previous:</strong> Senior roles at Cybereason, Trend Micro Europe, McAfee, and Onsight Solutions BV. 
+                    And worked in different ICT roles (developer, system engineer, projectmanager at one of the biggest retailes in the NL.
+                </p>
+
+                <div style="margin-top: 12px;">
+                    <strong style="color: #2d3748;">Certifications & Credentials:</strong>
+                    <div class="certifications">
+                        <span class="cert-badge">CISSP</span>
+                        <span class="cert-badge">CISM</span>
+                        <span class="cert-badge">CISA</span>
+                        <span class="cert-badge">CEH</span>
+                        <span class="cert-badge">CCNA</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Languages</div>
+                <p class="intro-text">English (fluent) • Dutch (native)</p>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Connect</div>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/hiddenmaces/" class="social-link" target="_blank">LinkedIn</a>
+                    <a href="https://github.com/hiddenmaces" class="social-link" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="policy-section">
+            <div class="policy-title">✓ GitHub Enterprise (GHE) Code Policy — Confirmed</div>
+            
+            <div class="policy-content">
+                <strong>Policy:</strong> All code developed for SentinelOne projects must reside in GitHub Enterprise. This ensures compliance with data governance, security controls, and intellectual property management.
+            </div>
+            
+            <div style="background: white; padding: 16px; border-radius: 6px; margin-bottom: 16px;">
+                <ul class="policy-list">
+                    <li>All SentinelOne code repositories must be hosted on GitHub Enterprise</li>
+                    <li>Code must not be stored in personal GitHub, external services, or local-only repositories</li>
+                    <li>Access controls and audit logging are enforced at the GHE level</li>
+                    <li>Code review and approval workflows comply with security standards</li>
+                    <li>Confidential or proprietary code must be marked private within GHE</li>
+                </ul>
+            </div>
+            
+            <div style="background: #c6f6d5; border: 2px solid #9ae6b4; border-radius: 6px; padding: 16px; margin-top: 16px;">
+                <div style="color: #22543d; font-size: 14px; line-height: 1.6;">
+                    <strong style="display: block; margin-bottom: 8px;">✓ Acknowledgment Confirmed</strong>
+                    I have read and understood the GitHub Enterprise code residency policy. I commit to ensuring all SentinelOne code resides in GHE in compliance with company security and governance standards.
+                </div>
+                <div class="confirmation-text" style="margin-top: 12px; color: #276749;">
+                    Confirmed and documented for compliance purposes.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+</body>
+</html>
