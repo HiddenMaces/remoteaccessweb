@@ -148,10 +148,47 @@
             font-size: 0.85rem;
         }
 
+        /* ── Two-column layout (Remote / Local) ────────────────── */
+        .columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .column-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.9rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .column-head i { color: var(--cyan); font-size: 0.95rem; }
+
+        .column-head h2 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+
+        .column-head .count {
+            margin-left: auto;
+            color: var(--subtext);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 860px) {
+            .columns { grid-template-columns: 1fr; }
+        }
+
         /* ── Tile grid ──────────────────────────────────────── */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
             gap: 14px;
         }
 
@@ -449,6 +486,7 @@
         }
 
         .field input,
+        .field select,
         .field textarea {
             background: rgba(255,255,255,0.04);
             border: 1px solid var(--border);
@@ -466,6 +504,7 @@
         .field textarea::placeholder { color: rgba(143,155,179,0.5); }
 
         .field input:focus,
+        .field select:focus,
         .field textarea:focus {
             border-color: var(--purple);
             box-shadow: 0 0 0 3px rgba(107,28,176,0.14);
@@ -595,7 +634,7 @@
 <header>
     <div class="logo">
         <div class="logo-mark"><i class="fa-solid fa-shield-halved" style="color:#fff"></i></div>
-        <div class="logo-name">SENTINEL<span>ONE</span></div>
+        <div class="logo-name">HIDDEN<span>MACES</span></div>
     </div>
     <div class="header-right">
         <span class="edit-badge">Edit Mode</span>
@@ -610,11 +649,28 @@
         <h1><strong id="page-title">Operational Gateway</strong></h1>
         <p id="page-sub">Secure Access Point — Systems Nominal</p>
     </div>
-    <div class="grid" id="grid">
-        <div class="state-box">
-            <div class="spinner-ring"></div>
-            <p>Loading&hellip;</p>
-        </div>
+    <div class="columns">
+        <section class="column">
+            <div class="column-head">
+                <i class="fa-solid fa-globe"></i>
+                <h2>Remote</h2>
+                <span class="count" id="count-remote"></span>
+            </div>
+            <div class="grid" id="grid-remote">
+                <div class="state-box">
+                    <div class="spinner-ring"></div>
+                    <p>Loading&hellip;</p>
+                </div>
+            </div>
+        </section>
+        <section class="column">
+            <div class="column-head">
+                <i class="fa-solid fa-house"></i>
+                <h2>Local</h2>
+                <span class="count" id="count-local"></span>
+            </div>
+            <div class="grid" id="grid-local"></div>
+        </section>
     </div>
 </main>
 
@@ -646,6 +702,19 @@
             <div class="field">
                 <label>Description</label>
                 <textarea id="f-desc" placeholder="Optional short description&hellip;"></textarea>
+            </div>
+            <div class="field">
+                <label>Category *</label>
+                <select id="f-category">
+                    <option value="remote">Remote</option>
+                    <option value="local">Local</option>
+                </select>
+            </div>
+            <div class="field" style="flex-direction: row; align-items: center; gap: 8px;">
+                <input type="checkbox" id="f-newtab" style="width: auto;" checked />
+                <label for="f-newtab" style="text-transform: none; letter-spacing: normal; font-size: 0.85rem; font-weight: 500; color: var(--text); cursor: pointer;">
+                    Open in a new tab/window instead of replacing this page
+                </label>
             </div>
         </div>
         <div class="modal-foot">
@@ -753,11 +822,13 @@ async function init() {
         applySettings(data.settings || {});
         render();
     } catch {
-        $('grid').innerHTML = `
+        const errorBox = `
             <div class="state-box error">
                 <i class="fa-solid fa-circle-exclamation"></i>
                 Failed to load — is the API container running?
             </div>`;
+        $('grid-remote').innerHTML = errorBox;
+        $('grid-local').innerHTML  = '';
     }
 }
 
@@ -775,24 +846,35 @@ function applySettings(s) {
 }
 
 // ── Render ───────────────────────────────────────────────────────
-function render() {
-    const grid = $('grid');
-    grid.innerHTML = '';
+function categoryOf(link) { return link.category === 'local' ? 'local' : 'remote'; }
 
-    if (links.length === 0 && !editMode) {
+function render() {
+    renderColumn('remote', $('grid-remote'));
+    renderColumn('local',  $('grid-local'));
+}
+
+function renderColumn(category, grid) {
+    grid.innerHTML = '';
+    const catLinks = links.filter(l => categoryOf(l) === category);
+
+    $(`count-${category}`).textContent = catLinks.length
+        ? `${catLinks.length} link${catLinks.length === 1 ? '' : 's'}`
+        : '';
+
+    if (catLinks.length === 0 && !editMode) {
         grid.innerHTML = `
             <div class="state-box">
                 <i class="fa-solid fa-layer-group"></i>
-                <p>No tiles yet.<br>Click the <strong>edit</strong> button to add your first link.</p>
+                <p>No ${category} tiles yet.<br>Click the <strong>edit</strong> button to add one.</p>
             </div>`;
         return;
     }
 
-    links.forEach((link, idx) => {
+    catLinks.forEach(link => {
         const tile = document.createElement('div');
-        tile.className   = 'tile';
-        tile.dataset.id  = link.id;
-        tile.dataset.idx = idx;
+        tile.className      = 'tile';
+        tile.dataset.id      = link.id;
+        tile.dataset.category = category;
 
         tile.innerHTML = `
             <div class="tile-bar"></div>
@@ -821,7 +903,10 @@ function render() {
 
         if (!editMode) {
             tile.addEventListener('click', () => {
-                if (link.url.startsWith('http://') || link.url.startsWith('https://')) {
+                const openNewTab = link.newTab !== undefined
+                    ? link.newTab
+                    : link.url.startsWith('http://') || link.url.startsWith('https://');
+                if (openNewTab) {
                     window.open(link.url, '_blank', 'noopener');
                 } else {
                     window.location.href = link.url;
@@ -844,8 +929,8 @@ function render() {
     // Add-tile button (visible in edit mode via CSS)
     const add = document.createElement('div');
     add.className = 'tile tile-add';
-    add.innerHTML = `<i class="fa-solid fa-plus"></i><span>Add Tile</span>`;
-    add.addEventListener('click', openAddModal);
+    add.innerHTML = `<i class="fa-solid fa-plus"></i><span>Add ${category === 'local' ? 'Local' : 'Remote'} Tile</span>`;
+    add.addEventListener('click', () => openAddModal(category));
     grid.appendChild(add);
 }
 
@@ -858,12 +943,14 @@ $('btn-edit').addEventListener('click', () => {
 });
 
 // ── Link modal ───────────────────────────────────────────────────
-function openAddModal() {
+function openAddModal(category = 'remote') {
     editingId = null;
     $('link-modal-title').innerHTML = '<i class="fa-solid fa-plus"></i>Add Link';
-    $('f-label').value = '';
-    $('f-url').value   = '';
-    $('f-desc').value  = '';
+    $('f-label').value    = '';
+    $('f-url').value      = '';
+    $('f-desc').value     = '';
+    $('f-category').value = category;
+    $('f-newtab').checked = true;
     openOverlay('link-overlay');
     $('f-label').focus();
 }
@@ -873,21 +960,27 @@ function openEditModal(id) {
     if (!link) return;
     editingId = id;
     $('link-modal-title').innerHTML = '<i class="fa-solid fa-pen"></i>Edit Link';
-    $('f-label').value = link.label;
-    $('f-url').value   = link.url;
-    $('f-desc').value  = link.description || '';
+    $('f-label').value    = link.label;
+    $('f-url').value      = link.url;
+    $('f-desc').value     = link.description || '';
+    $('f-category').value = categoryOf(link);
+    $('f-newtab').checked = link.newTab !== undefined
+        ? link.newTab
+        : link.url.startsWith('http://') || link.url.startsWith('https://');
     openOverlay('link-overlay');
     $('f-label').focus();
 }
 
 $('link-save').addEventListener('click', async () => {
-    const label = $('f-label').value.trim();
-    const url   = $('f-url').value.trim();
-    const desc  = $('f-desc').value.trim();
+    const label    = $('f-label').value.trim();
+    const url      = $('f-url').value.trim();
+    const desc     = $('f-desc').value.trim();
+    const category = $('f-category').value;
+    const newTab   = $('f-newtab').checked;
 
     if (!label || !url) { toast('Label and URL are required', 'err'); return; }
 
-    const payload = { label, url, description: desc };
+    const payload = { label, url, description: desc, category, newTab };
 
     try {
         if (editingId) {
@@ -952,14 +1045,15 @@ $('settings-save').addEventListener('click', async () => {
     }
 });
 
-// ── Drag-to-reorder ──────────────────────────────────────────────
+// ── Drag-to-reorder (within the same Remote/Local column) ─────────
 function onDragStart(e) {
-    dragSrc = parseInt(this.dataset.idx);
+    dragSrc = { id: this.dataset.id, category: this.dataset.category };
     this.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
 }
 
 function onDragOver(e) {
+    if (!dragSrc || dragSrc.category !== this.dataset.category) return;
     e.preventDefault();
     this.classList.add('drag-over');
     e.dataTransfer.dropEffect = 'move';
@@ -968,18 +1062,29 @@ function onDragOver(e) {
 function onDragLeave() { this.classList.remove('drag-over'); }
 
 function onDrop(e) {
-    e.preventDefault();
     this.classList.remove('drag-over');
-    const dest = parseInt(this.dataset.idx);
-    if (dragSrc === null || isNaN(dest) || dragSrc === dest) return;
-    const [moved] = links.splice(dragSrc, 1);
-    links.splice(dest, 0, moved);
+    if (!dragSrc || dragSrc.category !== this.dataset.category) return;
+    e.preventDefault();
+
+    const category = this.dataset.category;
+    const destId   = this.dataset.id;
+    if (dragSrc.id === destId) return;
+
+    const catLinks   = links.filter(l => categoryOf(l) === category);
+    const otherLinks = links.filter(l => categoryOf(l) !== category);
+    const srcIdx  = catLinks.findIndex(l => l.id === dragSrc.id);
+    const destIdx = catLinks.findIndex(l => l.id === destId);
+    if (srcIdx === -1 || destIdx === -1) return;
+
+    const [moved] = catLinks.splice(srcIdx, 1);
+    catLinks.splice(destIdx, 0, moved);
+    links = [...otherLinks, ...catLinks];
     render();
     api('POST', '/api/links/reorder', { ids: links.map(l => l.id) })
         .catch(() => toast('Failed to save order', 'err'));
 }
 
-function onDragEnd() { this.classList.remove('dragging'); }
+function onDragEnd() { this.classList.remove('dragging'); dragSrc = null; }
 
 // ── Keyboard: Escape closes top modal ────────────────────────────
 document.addEventListener('keydown', e => {
