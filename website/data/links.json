@@ -27,6 +27,14 @@
       "url": "https://mischa.hiddenmaces.nl/cert",
       "description": "",
       "id": "42982355-11d5-4d41-9488-c83a770323e0"
+    },
+    {
+      "label": "Dockhand",
+      "url": "http://asterix.ddn.lan:3000",
+      "description": "",
+      "category": "local",
+      "newTab": true,
+      "id": "67c09628-1c46-4455-93a4-049b5948e3e1"
     }
   ]
 }

@@ -93,3 +93,4 @@ dist/
 *.log
 *.sqlite3
 *.db
+website/data/links.json
