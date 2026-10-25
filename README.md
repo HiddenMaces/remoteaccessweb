@@ -130,6 +130,16 @@ On first login use `guacadmin` / `guacadmin`, then immediately go to:
 
 The dashboard is a tile-based link launcher. Tiles are stored in `website/data/links.json` via a REST API — no file editing required.
 
+### Initial data (optional)
+
+`links.json` is git-ignored and created automatically on first save. To start with pre-defined tiles, copy the example:
+
+```bash
+cp website/data/links.json.example website/data/links.json
+```
+
+Each link has `label`, `url` (`http://`, `https://` or a `/path`), `description`, `category` (`remote` or `local`), `newTab` (`true`/`false`) and a unique `id`.
+
 ### Managing tiles
 
 Click the **pen icon** (top right) to enter edit mode:
@@ -174,7 +184,8 @@ Add `-v` only if you also want to wipe database volumes.
 │   │   ├── default.conf          # Active Nginx config (create from sample)
 │   │   └── default.conf-sample   # Template with placeholders
 │   ├── data/
-│   │   └── links.json            # Persisted dashboard links
+│   │   ├── links.json            # Persisted dashboard links — git-ignored
+│   │   └── links.json.example    # Example data — copy to links.json
 │   ├── html/
 │   │   ├── index.html            # Dashboard frontend
 │   │   ├── 403error.html

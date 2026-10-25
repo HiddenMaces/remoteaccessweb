@@ -1,0 +1,32 @@
+{
+  "settings": {
+    "title": "Operational Gateway",
+    "email": "admin@example.com"
+  },
+  "links": [
+    {
+      "label": "Guacamole",
+      "url": "/guacamole",
+      "description": "Remote desktop gateway",
+      "category": "remote",
+      "newTab": false,
+      "id": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "label": "Example Remote Service",
+      "url": "https://remote.example.com",
+      "description": "Reachable from outside the network",
+      "category": "remote",
+      "newTab": true,
+      "id": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "label": "Example Local Service",
+      "url": "http://192.168.1.10:8080",
+      "description": "Only reachable on the local network",
+      "category": "local",
+      "newTab": true,
+      "id": "00000000-0000-4000-8000-000000000003"
+    }
+  ]
+}
